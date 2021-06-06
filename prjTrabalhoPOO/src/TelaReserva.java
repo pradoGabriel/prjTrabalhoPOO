@@ -4,10 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -26,6 +23,7 @@ public class TelaReserva implements TelaStrategy {
     private TextField txtNome = new TextField();
     private TextField txtData = new TextField();
     private TextArea txtDesc = new TextArea();
+    private ComboBox depenBox = new ComboBox();
 
 
     @Override
@@ -41,7 +39,7 @@ public class TelaReserva implements TelaStrategy {
         txtDesc.setPromptText("Descricao do local");
         txtDesc.setMinSize(150,100);
         telaReserva.add(lblNome,0,1);
-        telaReserva.add(txtNome,1,1);
+        telaReserva.add(depenBox,1,1);
         telaReserva.add(lblData,2,1);
         telaReserva.add(txtData,3,1);
         telaReserva.add(txtDesc,0,2,4,1);
@@ -49,6 +47,7 @@ public class TelaReserva implements TelaStrategy {
         telaReserva.add(fButton,0,3,4,1);
 
        // control.generatedTable();
+        adicionarComboBox();
         adicionarMargens(telaReserva,fButton);
 
         btnAdicionar.setOnAction((e)->{
@@ -80,4 +79,8 @@ public class TelaReserva implements TelaStrategy {
         telaReserva.setMargin(txtDesc, new Insets(0,0,0,100));
         telaReserva.setMargin(fp, new Insets(0,0,0,100));
     }
+    private void adicionarComboBox( ){
+        depenBox.getItems().add(("teste"));
+    }
+
 }

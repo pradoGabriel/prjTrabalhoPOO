@@ -3,6 +3,7 @@ package sample;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -30,6 +31,7 @@ public class TelaCadastro implements TelaStrategy, ChamadorTelas {
     private TextField txtComplemento = new TextField();
     private TextField txtCep = new TextField();
     private TextField txtUF = new TextField();
+    private ComboBox planoBox = new ComboBox();
 
     private Button btnVoltar = new Button("Voltar");
     private Button btnPagamento = new Button("Avançar");
@@ -57,13 +59,15 @@ public class TelaCadastro implements TelaStrategy, ChamadorTelas {
         telaCadastro.add(txtCep, 1, 5);
         telaCadastro.add(lblUF, 0, 6);
         telaCadastro.add(txtUF, 1, 6);
-        telaCadastro.add(btnPagamento, 1, 7);
+        telaCadastro.add(lblPlano, 0, 7);
+        telaCadastro.add(planoBox, 1, 7);
+        telaCadastro.add(btnPagamento, 1, 8);
+        adicionarComboBox();
         adicionarMargens(telaCadastro);
 
         StringConverter intToStringConverter = new IntegerStringConverter();
 
         btnPagamento.setOnAction((e) -> {
-            //lblTitulo.setText("Reserva");
             chamador.chamarTelas("Pagamento");
         });
         /*
@@ -86,6 +90,11 @@ public class TelaCadastro implements TelaStrategy, ChamadorTelas {
         telaCadastro.setMargin(lblComplemento, new Insets(0, 0, 0, 100));
         telaCadastro.setMargin(lblCep, new Insets(0, 0, 0, 100));
         telaCadastro.setMargin(lblUF, new Insets(0, 0, 0, 100));
+        telaCadastro.setMargin(lblPlano, new Insets(0, 0, 0, 100));
+    }
+
+    private void adicionarComboBox( ){
+       // planoBox.getItems().add(("teste"));
     }
 
     @Override
