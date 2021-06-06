@@ -32,7 +32,7 @@ public class TelaCadastro implements TelaStrategy, ChamadorTelas {
     private TextField txtUF = new TextField();
 
     private Button btnVoltar = new Button("Voltar");
-    private Button btnPagamento = new Button("Pagamento");
+    private Button btnPagamento = new Button("Avançar");
 
     TelaCadastro(ChamadorTelas chamador) {
         this.chamador = chamador;

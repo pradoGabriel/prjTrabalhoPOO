@@ -30,47 +30,47 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
 
     @Override
     public void start(Stage stage) throws Exception {
+        btnSair.setDisable(true);
+        btnReserva.setDisable(true);
+        btnVerPlanos.setDisable(true);
+        btnMeuPlano.setDisable(true);
         FlowPane fp = new FlowPane();
         fp.setAlignment(Pos.CENTER);
         fp.getChildren().add(lblTitulo);
         lblTitulo.setAlignment(Pos.CENTER);
         TilePane tp = new TilePane();
-        Scene scn = new Scene (bp, 800,500);
-        lblTitulo.setPrefSize(300,50);
+        Scene scn = new Scene(bp, 800, 500);
+        lblTitulo.setPrefSize(300, 50);
         lblTitulo.setFont(new Font(25.0));
         tp.setVgap(20);
         bp.setTop(fp);
         bp.setLeft(tp);
         tp.setPrefColumns(1);
-        tp.getChildren().addAll(btnMeuPlano,btnReserva,btnLogin,btnSair,btnVerPlanos);
+        tp.getChildren().addAll(btnMeuPlano, btnReserva, btnLogin, btnSair, btnVerPlanos);
         bp.setCenter(telaLogin.gerarTela());
 
 
-        btnReserva.setOnAction((e)->{
+        btnReserva.setOnAction((e) -> {
             lblTitulo.setText("Reserva");
             bp.setCenter(telaReserva.gerarTela());
         });
 
-        btnMeuPlano.setOnAction((e)->{
+        btnMeuPlano.setOnAction((e) -> {
             lblTitulo.setText("Meu Plano");
             bp.setCenter(telaMeuPlano.gerarTela());
         });
 
-        btnSair.setOnAction((e)->{
+        btnSair.setOnAction((e) -> {
             lblTitulo.setText("Saiu do sistema");
-            btnMeuPlano.setDisable(true);
-            btnReserva.setDisable(true);
-            btnSair.setDisable(true);
-            btnVerPlanos.setDisable(true);
-            btnLogin.setDisable(false);
+            setBotoesDeslogado();
         });
 
-        btnLogin.setOnAction((e)->{
+        btnLogin.setOnAction((e) -> {
             lblTitulo.setText("Login");
             bp.setCenter(telaLogin.gerarTela());
         });
 
-        btnVerPlanos.setOnAction((e)->{
+        btnVerPlanos.setOnAction((e) -> {
             lblTitulo.setText("Consulta de Planos");
             bp.setCenter(telaNovoPlano.gerarTela());
         });
@@ -80,25 +80,40 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
         stage.show();
     }
 
-    public void chamarTelas(String acao){
-        if (acao.equals("Avançar")){
+    public void chamarTelas(String acao) {
+        if (acao.equals("Avançar")) {
             lblTitulo.setText("Cadastro");
             bp.setCenter(telaCadastro.gerarTela());
-        }else if (acao.equals("Pagamento")){
+        } else if (acao.equals("Pagamento")) {
             lblTitulo.setText("Pagamento");
             bp.setCenter(telaPagto.gerarTela());
-        }else if(acao.equals("Entrar")){
-            btnSair.setDisable(false);
-            btnMeuPlano.setDisable(false);
-            btnReserva.setDisable(false);
-            btnLogin.setDisable(true);
+        } else if (acao.equals("Entrar")) {
+            setBotoesLogado();
             lblTitulo.setText("Meu Plano");
             bp.setCenter(telaMeuPlano.gerarTela());
-        }else if(acao.equals("Confirmar")){
+        } else if (acao.equals("Confirmar")) {
             lblTitulo.setText("Meu Plano");
+            setBotoesLogado();
             bp.setCenter(telaMeuPlano.gerarTela());
         }
     }
+
+    public void setBotoesLogado() {
+        btnSair.setDisable(false);
+        btnMeuPlano.setDisable(false);
+        btnReserva.setDisable(false);
+        btnLogin.setDisable(true);
+    }
+
+    public void setBotoesDeslogado(){
+        btnMeuPlano.setDisable(true);
+        btnReserva.setDisable(true);
+        btnSair.setDisable(true);
+        btnVerPlanos.setDisable(true);
+        btnLogin.setDisable(false);
+    }
+
+
 
     public static void main (String[] args){
         Application.launch(TelaPrincipal.class, args);
