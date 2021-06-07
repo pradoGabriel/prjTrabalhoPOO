@@ -1,0 +1,81 @@
+GO
+CREATE DATABASE Clube;
+
+GO 
+USE Clube;
+
+GO
+CREATE TABLE Endereco 
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Logradouro VARCHAR(200) NOT NULL,
+	Numero INT NOT NULL,
+	Complemento VARCHAR(30),
+	Cep VARCHAR(10) NOT NULL, 
+	Uf VARCHAR(2) NOT NULL
+);
+
+GO 
+CREATE TABLE Pagamento
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	CpfTitular VARCHAR(20) NOT NULL,
+	NumCartao VARCHAR(30) NOT NULL,
+	Cvv VARCHAR(3) NOT NULL,
+	ValidadeCartao VARCHAR(10) NOT NULL,
+);
+
+GO
+CREATE TABLE Plano
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Nome VARCHAR(30) NOT NULL,
+	Valor VARCHAR (20) NOT NULL,
+	Descricao TEXT NOT NULL,
+);
+
+GO
+CREATE TABLE Dependencia
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Nome VARCHAR(30) NOT NULL,
+	Descricao TEXT NOT NULL,
+);
+
+GO
+CREATE TABLE PlanoDependencia
+(
+	TempoPermanencia VARCHAR(20) NOT NULL,
+	IdPlano INT NOT NULL,
+	IdDependencia INT NOT NULL,
+	CONSTRAINT FK_Plano_PlanoDependencia FOREIGN KEY (IdPlano) REFERENCES Plano(Id),
+	CONSTRAINT FK_Dependencia_PlanoDependencia FOREIGN KEY (IdDependencia) REFERENCES Dependencia(Id),
+);
+
+GO
+CREATE TABLE Usuario
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Nome VARCHAR (50) NOT NULL,
+	Senha VARCHAR (50) NOT NULL,
+	Cpf VARCHAR(20) NOT NULL,
+	IsAdmin BIT NOT NULL,
+	IdPlano INT NOT NULL,
+	IdEndereco INT NOT NULL,
+	IdPagamento INT,
+	CONSTRAINT FK_Plano_Usuario FOREIGN KEY (IdPlano) REFERENCES Plano(Id),
+	CONSTRAINT FK_Endereco_Usuario FOREIGN KEY (IdEndereco) REFERENCES Endereco(Id),
+	CONSTRAINT FK_Pagamento_Usuario FOREIGN KEY (IdPagamento) REFERENCES Pagamento(Id),
+);
+
+GO
+CREATE TABLE Reserva
+(
+	Id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	IdDependencia INT NOT NULL,
+	IdUsuario INT NOT NULL,
+	DataReserva VARCHAR(30) NOT NULL,
+	CONSTRAINT FK_Usuario_Reserva FOREIGN KEY (IdUsuario) REFERENCES Usuario(Id),
+	CONSTRAINT FK_Dependencia_Reserva FOREIGN KEY (IdDependencia) REFERENCES Dependencia(Id)
+)
+
