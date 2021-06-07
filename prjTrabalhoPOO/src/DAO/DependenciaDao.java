@@ -24,8 +24,8 @@ public class DependenciaDao implements IDependenciaDao {
     public List<DependenciaModel> getDependenciasByPlano(int idPlano) throws SQLException {
         List<DependenciaModel> listaDependencias = new ArrayList<DependenciaModel>();
 
-        String sql = "SELECT D.* FROM Dependencia D \n" +
-                "INNER JOIN PlanoDependencia PD ON PD.IdDependencia = D.Id\n" +
+        String sql = "SELECT D.* FROM Dependencia D " +
+                "INNER JOIN PlanoDependencia PD ON PD.IdDependencia = D.Id" +
                 "Where PD.IdPlano = ?";
 
         PreparedStatement ps = connection.prepareStatement(sql);
