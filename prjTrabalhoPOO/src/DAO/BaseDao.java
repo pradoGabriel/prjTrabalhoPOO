@@ -11,8 +11,8 @@ public class BaseDao implements IBaseDao {
 
     @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("net.sourceforge.jtds.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:jdts:sqlserver://127.0.0.1:1433;DatabaseName:Clube;namedPipes=true", "sa", "replytest");
-        return connection;
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://127.0.0.1:1433/Clube; namedPipes=true", "sa", "1234");
+            return connection;
     }
 }

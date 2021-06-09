@@ -10,6 +10,20 @@ public class UsuarioModel {
     private EnderecoModel endereco;
     private PagamentoModel pagamento;
 
+    @Override
+    public String toString() {
+        return "UsuarioModel{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", senha='" + senha + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", plano=" + plano +
+                ", endereco=" + endereco +
+                ", pagamento=" + pagamento +
+                '}';
+    }
+
     public int getId() {
         return id;
     }

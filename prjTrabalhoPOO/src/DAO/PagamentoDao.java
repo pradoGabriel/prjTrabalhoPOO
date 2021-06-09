@@ -11,29 +11,32 @@ import java.sql.SQLException;
 
 public class PagamentoDao implements IPagamentoDao {
     private Connection connection;
-
-    public PagamentoDao() throws SQLException, ClassNotFoundException {
-        IBaseDao baseDao = new BaseDao();
-        connection = baseDao.getConnection();
-    }
+    private static IBaseDao baseDao = new BaseDao();
+    private int id;
 
     @Override
-    public int insertPagamento(PagamentoModel pagamento) throws SQLException {
-        String sql = "INSERT INTO Pagamento (CpfTitular, NumCartao, Cvv, ValidadeCartao) VALUES (?, ?, ?, ?) SELECT SCOPE_IDENTITY()";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, pagamento.getCpfTitular());
-        ps.setString(2, pagamento.getNumCartao());
-        ps.setString(3, pagamento.getCvv());
-        ps.setString(4, pagamento.getValidadeCartao());
+    public int insertPagamento(PagamentoModel pagamento){
+        try {
+            connection = baseDao.getConnection();
+            String sql = "INSERT INTO Pagamento (NomeTitular,CpfTitular, NumCartao, Cvv, ValidadeCartao) VALUES (?, ?, ?, ?, ?) SELECT SCOPE_IDENTITY()";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, pagamento.getNomeTitular());
+            ps.setString(2, pagamento.getCpfTitular());
+            ps.setString(3, pagamento.getNumCartao());
+            ps.setString(4, pagamento.getCvv());
+            ps.setString(5, pagamento.getValidadeCartao());
 
-        int id = 0;
-        ResultSet result = ps.executeQuery();
+            id = 0;
+            ResultSet result = ps.executeQuery();
 
-        if (result.next()){
-            id = result.getInt(1);
+            if (result.next()) {
+                id = result.getInt(1);
+            }
+
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
         }
-
-        ps.close();
         return id;
     }
 }

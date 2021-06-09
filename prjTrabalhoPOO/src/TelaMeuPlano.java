@@ -1,5 +1,8 @@
-package sample;
 
+
+import Control.PlanoControl;
+import Control.UsuarioControl;
+import Model.UsuarioModel;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -19,6 +22,8 @@ public class TelaMeuPlano implements TelaStrategy {
     private TextField txtPlano = new TextField();
     private TextArea txtDesc = new TextArea();
 
+    private UsuarioControl usuarioControl = new UsuarioControl();
+    private PlanoControl planoControl = new PlanoControl();
 
     @Override
     public Pane gerarTela() {
@@ -26,6 +31,10 @@ public class TelaMeuPlano implements TelaStrategy {
         telaMeuPlano.setHgap(5);
         telaMeuPlano.setVgap(20);
         txtDesc.setMinSize(150,100);
+        txtNome.setEditable(false);
+        txtDesc.setEditable(false);
+        txtCpf.setEditable(false);
+        txtPlano.setEditable(false);
         telaMeuPlano.add(lblNome,0,1);
         telaMeuPlano.add(txtNome,1,1);
         telaMeuPlano.add(lblCpf,2,1);
@@ -34,12 +43,14 @@ public class TelaMeuPlano implements TelaStrategy {
         telaMeuPlano.add(txtDesc,1,2,3,1);
         adicionarMargens(telaMeuPlano);
 
-        /*
-        Bindings.bindBidirectional(txtNome.textProperty(), control.nomeProperty());
-        Bindings.bindBidirectional(txtCpf.textProperty(), control.raProperty());
-        Bindings.bindBidirectional(txtPlano.textProperty(), control.nomeProperty());
-        Bindings.bindBidirectional(txtDesc.textProperty(),control.resultListProperty());
-*/
+        Bindings.bindBidirectional(txtNome.textProperty(), usuarioControl.nomeProperty());
+        Bindings.bindBidirectional(txtCpf.textProperty(), usuarioControl.cpfProperty());
+        Bindings.bindBidirectional(txtPlano.textProperty(), planoControl.nomeProperty());
+        Bindings.bindBidirectional(txtDesc.textProperty(), planoControl.descricaoProperty());
+
+        System.out.println(usuarioControl.getId());
+        UsuarioModel u = usuarioControl.getEntity();
+        planoControl.planoByUsuario(u.getPlano().getId());
         return telaMeuPlano;
     }
 

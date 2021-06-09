@@ -1,5 +1,7 @@
-package sample;
 
+
+import Control.PlanoControl;
+import Control.UsuarioControl;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +12,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class TelaPrincipal extends Application implements ChamadorTelas {
 
@@ -27,6 +31,8 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
     Button btnMeuPlano = new Button("Meu plano");
     Button btnReserva = new Button("Reservas");
     BorderPane bp = new BorderPane();
+
+    private UsuarioControl usuarioControl = new UsuarioControl();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -49,7 +55,6 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
         tp.getChildren().addAll(btnMeuPlano, btnReserva, btnLogin, btnSair, btnVerPlanos);
         bp.setCenter(telaLogin.gerarTela());
 
-
         btnReserva.setOnAction((e) -> {
             lblTitulo.setText("Reserva");
             bp.setCenter(telaReserva.gerarTela());
@@ -61,7 +66,8 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
         });
 
         btnSair.setOnAction((e) -> {
-            lblTitulo.setText("Saiu do sistema");
+            lblTitulo.setText("Login");
+            bp.setCenter(telaLogin.gerarTela());
             setBotoesDeslogado();
         });
 
@@ -88,9 +94,17 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
             lblTitulo.setText("Pagamento");
             bp.setCenter(telaPagto.gerarTela());
         } else if (acao.equals("Entrar")) {
-            setBotoesLogado();
-            lblTitulo.setText("Meu Plano");
-            bp.setCenter(telaMeuPlano.gerarTela());
+            if(usuarioControl.getEntity().isAdmin()){
+                setBotoesLogadoAdmin();
+                lblTitulo.setText("Planos");
+                bp.setCenter(telaNovoPlano.gerarTela());
+            }
+            else{
+                lblTitulo.setText("Meu Plano");
+                setBotoesLogado();
+                bp.setCenter(telaMeuPlano.gerarTela());
+            }
+
         } else if (acao.equals("Confirmar")) {
             lblTitulo.setText("Meu Plano");
             setBotoesLogado();
@@ -98,6 +112,10 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
         }
     }
 
+    public void setBotoesLogadoAdmin() {
+        btnSair.setDisable(false);
+        btnVerPlanos.setDisable(false);
+    }
     public void setBotoesLogado() {
         btnSair.setDisable(false);
         btnMeuPlano.setDisable(false);
@@ -112,7 +130,6 @@ public class TelaPrincipal extends Application implements ChamadorTelas {
         btnVerPlanos.setDisable(true);
         btnLogin.setDisable(false);
     }
-
 
 
     public static void main (String[] args){

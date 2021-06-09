@@ -1,5 +1,10 @@
-package sample;
 
+
+import Control.EnderecoControl;
+import Control.PagamentoControl;
+import Control.PlanoControl;
+import Control.UsuarioControl;
+import Model.UsuarioModel;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -26,6 +31,10 @@ public class TelaPagamento implements TelaStrategy, ChamadorTelas {
 
     private Button btnConfirmar = new Button("Confirmar");
 
+    private UsuarioControl usuarioControl = new UsuarioControl();
+    private PagamentoControl pagamentoControl = new PagamentoControl();
+    private EnderecoControl enderecoControl = new EnderecoControl();
+    private PlanoControl planoControl = new PlanoControl();
     TelaPagamento(ChamadorTelas chamador){
         this.chamador = chamador;
     }
@@ -50,17 +59,21 @@ public class TelaPagamento implements TelaStrategy, ChamadorTelas {
         adicionarMargens(telaPagamento);
 
         btnConfirmar.setOnAction((e) -> {
+            usuarioControl.setPagamento(pagamentoControl.getEntity());
+            usuarioControl.setEndereco(enderecoControl.getEntity());
+            UsuarioModel u = usuarioControl.getEntity();
+            System.out.println(u.toString());
+            usuarioControl.adicionar();
             chamador.chamarTelas("Confirmar");
         });
 
-        /*
-        Bindings.bindBidirectional(txtNome.textProperty(),control.dataProperty());
-        Bindings.bindBidirectional(txtCpf.textProperty(),control.dataProperty());
-        Bindings.bindBidirectional(txtCartao.textProperty(),control.dataProperty());
-        Bindings.bindBidirectional(txtCvv.textProperty(),control.dataProperty());
-        Bindings.bindBidirectional(txtValidade.textProperty(),control.dataProperty());
-        Bindings.bindBidirectional(txtValor.textProperty(),control.dataProperty());
-         */
+
+        Bindings.bindBidirectional(txtNome.textProperty(),pagamentoControl.nomeTitularProperty());
+        Bindings.bindBidirectional(txtCpf.textProperty(),pagamentoControl.cpfTitularProperty());
+        Bindings.bindBidirectional(txtCartao.textProperty(),pagamentoControl.numCartaoProperty());
+        Bindings.bindBidirectional(txtCvv.textProperty(),pagamentoControl.cvvProperty());
+        Bindings.bindBidirectional(txtValidade.textProperty(),pagamentoControl.validadeCartaoProperty());
+        Bindings.bindBidirectional(txtValor.textProperty(),planoControl.valorProperty());
 
         return telaPagamento;
     }

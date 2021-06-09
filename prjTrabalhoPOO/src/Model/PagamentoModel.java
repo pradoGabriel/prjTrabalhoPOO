@@ -2,10 +2,19 @@ package Model;
 
 public class PagamentoModel {
     private int id;
+    private String nomeTitular;
     private String cpfTitular;
     private String numCartao;
     private String Cvv;
     private String validadeCartao;
+
+    public String getNomeTitular() {
+        return nomeTitular;
+    }
+
+    public void setNomeTitular(String nomeTitular) {
+        this.nomeTitular = nomeTitular;
+    }
 
     public int getId() {
         return id;

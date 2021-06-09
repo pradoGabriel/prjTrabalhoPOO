@@ -1,15 +1,17 @@
-package sample;
-
+import Control.ReservaControl;
+import Control.DependenciaControl;
+import Control.UsuarioControl;
+import Model.DependenciaModel;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TelaReserva implements TelaStrategy {
     private Label lblNome = new Label("Dependência: ");
@@ -23,11 +25,15 @@ public class TelaReserva implements TelaStrategy {
     private TextField txtNome = new TextField();
     private TextField txtData = new TextField();
     private TextArea txtDesc = new TextArea();
-    private ComboBox depenBox = new ComboBox();
+    private ComboBox depenBox;
 
-
+    private UsuarioControl usuarioControl = new UsuarioControl();
+    private ReservaControl reservaControl  = new ReservaControl();
+    private DependenciaControl dependenciaControl  = new DependenciaControl();
+    private List<DependenciaModel> listDependencia = new ArrayList<>();
     @Override
     public Pane gerarTela() {
+        depenBox = new ComboBox();
         FlowPane fButton = new FlowPane();
         fButton.setAlignment(Pos.CENTER);
         fButton.setHgap(30);
@@ -38,6 +44,7 @@ public class TelaReserva implements TelaStrategy {
         txtData.setPromptText(String.valueOf(LocalDate.now()));
         txtDesc.setPromptText("Descricao do local");
         txtDesc.setMinSize(150,100);
+        depenBox.getItems();
         telaReserva.add(lblNome,0,1);
         telaReserva.add(depenBox,1,1);
         telaReserva.add(lblData,2,1);
@@ -46,31 +53,40 @@ public class TelaReserva implements TelaStrategy {
         fButton.getChildren().addAll(btnAdicionar,btnPesquisar,btnExcluir,btnAtualizar);
         telaReserva.add(fButton,0,3,4,1);
 
-       // control.generatedTable();
+        reservaControl.generatedTable(usuarioControl.getEntity());
+        telaReserva.add(reservaControl.getTable(),0,4,4,1);
         adicionarComboBox();
         adicionarMargens(telaReserva,fButton);
 
+        depenBox.setOnAction((e)->{
+            dependenciaControl.setDependenciaByName(depenBox.getSelectionModel().getSelectedItem()+"");
+        });
+
         btnAdicionar.setOnAction((e)->{
-            System.out.println("Botao adicionar reserva pressionado");
+            reservaControl.adicionar(usuarioControl.getEntity(),dependenciaControl.getEntity());
         });
 
         btnPesquisar.setOnAction((e)->{
-            System.out.println("Botao pesquisar reserva pressionado");
+            reservaControl.getReservasByNome(usuarioControl.getId(), depenBox.getPromptText());
         });
 
         btnExcluir.setOnAction((e)->{
-            System.out.println("Botao excluir reserva pressionado");
+            reservaControl.setUsuario(usuarioControl.getEntity());
+            reservaControl.deleteReserva(usuarioControl.getId());
         });
 
         btnAtualizar.setOnAction((e)->{
-            System.out.println("Botao atualizar reserva pressionado");
+            reservaControl.setUsuario(usuarioControl.getEntity());
+            reservaControl.updateReserva(usuarioControl.getId());
         });
-       /*
-        Bindings.bindBidirectional(txtNome.textProperty(), control.nomeProperty());
-        Bindings.bindBidirectional(txtDesc.textProperty(), control.nomeProperty());
-        Bindings.bindBidirectional(txtData.textProperty(),control.dataProperty(),localDateToStringConverter);
-        */
 
+
+        Bindings.bindBidirectional(depenBox.promptTextProperty(), dependenciaControl.nomeProperty());
+
+        Bindings.bindBidirectional(txtDesc.textProperty(), reservaControl.descDependenciaProperty());
+        Bindings.bindBidirectional(txtDesc.textProperty(), dependenciaControl.descricaoProperty());
+        Bindings.bindBidirectional(txtData.textProperty(),reservaControl.dataReservaProperty());
+        Bindings.bindBidirectional(depenBox.promptTextProperty(), reservaControl.nomeDependenciaProperty());
         return telaReserva;
     }
 
@@ -78,9 +94,15 @@ public class TelaReserva implements TelaStrategy {
         telaReserva.setMargin(lblNome, new Insets(0,0,0,100));
         telaReserva.setMargin(txtDesc, new Insets(0,0,0,100));
         telaReserva.setMargin(fp, new Insets(0,0,0,100));
+        telaReserva.setMargin(reservaControl.getTable(), new Insets(0,0,0,100));
     }
     private void adicionarComboBox( ){
-        depenBox.getItems().add(("teste"));
+        listDependencia = dependenciaControl.retornaDependencia(usuarioControl.getEntity());
+        for(DependenciaModel p : listDependencia)
+            depenBox.getItems().add((p.getNome()));
+        depenBox.getSelectionModel().selectFirst();
+        dependenciaControl.setDependenciaByName(depenBox.getSelectionModel().getSelectedItem()+"");
+
     }
 
 }

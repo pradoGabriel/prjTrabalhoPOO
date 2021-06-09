@@ -14,69 +14,115 @@ import java.util.List;
 
 public class ReservaDao implements IReservaDao {
     private Connection connection;
+    private static IBaseDao baseDao = new BaseDao();
 
-    public ReservaDao() throws SQLException, ClassNotFoundException {
-        IBaseDao baseDao = new BaseDao();
-        connection = baseDao.getConnection();
+
+    @Override
+    public void insertReserva(ReservaModel reserva) {
+        try {
+            connection = baseDao.getConnection();
+            String sql = "INSERT INTO Reserva (IdDependencia, IdUsuario, DataReserva) VALUES (?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, reserva.getDependencia().getId());
+            ps.setInt(2, reserva.getUsuario().getId());
+            ps.setString(3, reserva.getDataReserva());
+
+            ps.execute();
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void insertReserva(ReservaModel reserva) throws SQLException {
-        String sql = "INSERT INTO Reserva (IdDependencia, IdUsuario, DataReserva) VALUES (?, ?, ?)";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, reserva.getDependencia().getId());
-        ps.setInt(2, reserva.getUsuario().getId());
-        ps.setString(3, reserva.getDataReserva());
+    public void updateReserva(ReservaModel reserva) {
+        try {
+            connection = baseDao.getConnection();
+            String sql = "UPDATE Reserva SET IdDependencia = ?, IdUsuario = ?, DataReserva = ? WHERE Id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, reserva.getUsuario().getId());
+            ps.setString(3, reserva.getDataReserva());
+            ps.setInt(4, reserva.getId());
 
-        ps.execute();
-        ps.close();
+            ps.execute();
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void updateReserva(ReservaModel reserva) throws SQLException {
-        String sql = "UPDATE Reserva SET IdDependencia = ?, IdUsuario = ?, DataReserva = ? WHERE Id = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, reserva.getDependencia().getId());
-        ps.setInt(2, reserva.getUsuario().getId());
-        ps.setString(3, reserva.getDataReserva());
-        ps.setInt(4, reserva.getId());
-
-        ps.execute();
-        ps.close();
+    public void deleteReserva(int idReserva){
+        try {
+            connection = baseDao.getConnection();
+            String sql = "DELETE Reserva WHERE Id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idReserva);
+            ps.execute();
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void deleteReserva(int idReserva) throws SQLException {
-        String sql = "DELETE Reserva WHERE Id = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, idReserva);
-        ps.execute();
-        ps.close();
-    }
-
-    @Override
-    public List<ReservaModel> getReservasByUsuario(int idUsuario) throws SQLException {
+    public List<ReservaModel> getReservasByUsuario(int idUsuario){
         List<ReservaModel> listaReservas = new ArrayList<ReservaModel>();
 
-        String sql = "SELECT R.Id, R.DataReserva, D.Nome AS NomeDependencia, D.Descricao FROM Reserva R" +
-                "                INNER JOIN Dependencia D ON R.IdDependencia = D.Id WHERE IdUsuario = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, idUsuario);
+        try {
+            connection = baseDao.getConnection();
+            String sql = "SELECT R.Id, R.DataReserva, D.Nome AS NomeDependencia, D.Descricao FROM Reserva R" +
+                    "                INNER JOIN Dependencia D ON R.IdDependencia = D.Id WHERE IdUsuario = ? ";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
 
-        ResultSet result = ps.executeQuery();
-        while(result.next()){
-            DependenciaModel dependencia = new DependenciaModel();
-            ReservaModel reserva = new ReservaModel();
-            reserva.setId(result.getInt("Id"));
-            reserva.setDataReserva(result.getString("DataReserva"));
-            dependencia.setNome(result.getString("NomeDependencia"));
-            dependencia.setDescricao(result.getString("Descricao"));
-            reserva.setDependencia(dependencia);
+            ResultSet result = ps.executeQuery();
+            while (result.next()) {
+                DependenciaModel dependencia = new DependenciaModel();
+                ReservaModel reserva = new ReservaModel();
+                reserva.setId(result.getInt("Id"));
+                reserva.setDataReserva(result.getString("DataReserva"));
+                dependencia.setNome(result.getString("NomeDependencia"));
+                dependencia.setDescricao(result.getString("Descricao"));
+                reserva.setDependencia(dependencia);
 
-            listaReservas.add(reserva);
+                listaReservas.add(reserva);
+            }
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
         }
-        ps.close();
+        return listaReservas;
+    }
+    @Override
+    public List<ReservaModel> getReservasByNome(int idUsuario,String pesquisa){
+        List<ReservaModel> listaReservas = new ArrayList<ReservaModel>();
 
+        try {
+            connection = baseDao.getConnection();
+            String sql = "SELECT R.Id, R.DataReserva, D.Nome AS NomeDependencia, D.Descricao FROM Reserva R" +
+                    "                INNER JOIN Dependencia D ON R.IdDependencia = D.Id WHERE IdUsuario = ? AND D.Nome LIKE ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            ps.setString(2, pesquisa);
+
+            ResultSet result = ps.executeQuery();
+            while (result.next()) {
+                DependenciaModel dependencia = new DependenciaModel();
+                ReservaModel reserva = new ReservaModel();
+                reserva.setId(result.getInt("Id"));
+                reserva.setDataReserva(result.getString("DataReserva"));
+                dependencia.setNome(result.getString("NomeDependencia"));
+                dependencia.setDescricao(result.getString("Descricao"));
+                reserva.setDependencia(dependencia);
+
+                listaReservas.add(reserva);
+            }
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
         return listaReservas;
     }
 }

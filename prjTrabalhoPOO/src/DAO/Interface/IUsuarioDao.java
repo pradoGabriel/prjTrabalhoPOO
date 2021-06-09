@@ -6,6 +6,6 @@ import Model.UsuarioModel;
 import java.sql.SQLException;
 
 public interface IUsuarioDao {
-    public void insertUsuario(UsuarioModel usuario) throws SQLException, ClassNotFoundException;
-    public UsuarioModel login(String nome, String senha) throws SQLException;
+    public void insertUsuario(UsuarioModel usuario);
+    public UsuarioModel login(String nome, String senha);
 }

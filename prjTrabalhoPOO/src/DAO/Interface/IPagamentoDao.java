@@ -5,5 +5,5 @@ import Model.PagamentoModel;
 import java.sql.SQLException;
 
 public interface IPagamentoDao {
-    public int insertPagamento(PagamentoModel pagamento) throws SQLException;
+    public int insertPagamento(PagamentoModel pagamento);
 }

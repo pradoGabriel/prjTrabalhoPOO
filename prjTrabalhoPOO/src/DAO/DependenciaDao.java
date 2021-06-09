@@ -14,34 +14,84 @@ import java.util.List;
 
 public class DependenciaDao implements IDependenciaDao {
     private Connection connection;
+    private static IBaseDao baseDao = new BaseDao();
 
-    public DependenciaDao() throws SQLException, ClassNotFoundException {
-        IBaseDao baseDao = new BaseDao();
-        connection = baseDao.getConnection();
+    @Override
+    public List<DependenciaModel> getDependenciasByPlano(int idPlano)  {
+        List<DependenciaModel> listaDependencias = new ArrayList<DependenciaModel>();
+        try {
+            connection = baseDao.getConnection();
+
+            String sql = "SELECT D.* FROM Dependencia D \n" +
+                    "INNER JOIN PlanoDependencia PD ON PD.IdDependencia = D.Id\n" +
+                    "Where PD.IdPlano = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, idPlano);
+
+            ResultSet result = ps.executeQuery();
+            while (result.next()) {
+                DependenciaModel dependencia = new DependenciaModel();
+                dependencia.setId(result.getInt(("Id")));
+                dependencia.setNome(result.getString("Nome"));
+                dependencia.setDescricao(result.getString(("Descricao")));
+
+                listaDependencias.add(dependencia);
+            }
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return listaDependencias;
     }
 
     @Override
-    public List<DependenciaModel> getDependenciasByPlano(int idPlano) throws SQLException {
+    public List<DependenciaModel> getAllDependencias() {
         List<DependenciaModel> listaDependencias = new ArrayList<DependenciaModel>();
+        try {
+            connection = baseDao.getConnection();
 
-        String sql = "SELECT D.* FROM Dependencia D \n" +
-                "INNER JOIN PlanoDependencia PD ON PD.IdDependencia = D.Id\n" +
-                "Where PD.IdPlano = ?";
+            String sql = "SELECT * FROM Dependencia ";
 
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, idPlano);
+            PreparedStatement ps = connection.prepareStatement(sql);
 
-        ResultSet result = ps.executeQuery();
-        while(result.next()){
-           DependenciaModel dependencia = new DependenciaModel();
-            dependencia.setId(result.getInt(("Id")));
-            dependencia.setNome(result.getString("Nome"));
-            dependencia.setDescricao(result.getString(("Descricao")));
+            ResultSet result = ps.executeQuery();
+            while (result.next()) {
+                DependenciaModel dependencia = new DependenciaModel();
+                dependencia.setId(result.getInt(("Id")));
+                dependencia.setNome(result.getString("Nome"));
+                dependencia.setDescricao(result.getString(("Descricao")));
 
-            listaDependencias.add(dependencia);
+                listaDependencias.add(dependencia);
+            }
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
         }
-        ps.close();
-
         return listaDependencias;
+    }
+
+    @Override
+    public DependenciaModel getDependenciaByName(String nomePlano)  {
+        DependenciaModel dependencia = new DependenciaModel();
+        try {
+            connection = baseDao.getConnection();
+
+            String sql = "SELECT * FROM Dependencia Where nome = ?";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, nomePlano);
+
+            ResultSet result = ps.executeQuery();
+            while (result.next()) {
+                dependencia.setId(result.getInt(("Id")));
+                dependencia.setNome(result.getString("Nome"));
+                dependencia.setDescricao(result.getString(("Descricao")));
+            }
+            ps.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return dependencia;
     }
 }

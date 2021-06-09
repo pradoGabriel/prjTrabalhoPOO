@@ -1,10 +1,10 @@
-package sample;
 
+
+import Control.PlanoControl;
+import Control.UsuarioControl;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -12,13 +12,13 @@ import javafx.scene.layout.Pane;
 public class TelaLogin implements TelaStrategy {
     private ChamadorTelas chamador;
     TextField txtUsuario = new TextField();
-    TextField txtSenha = new TextField();
+    PasswordField txtSenha = new PasswordField();
     Button btnLogin = new Button("Entrar");
     Button btnCadastro = new Button("Cadastrar-se");
     Label lblUsuario = new Label("Usuário");
     Label lblSenha = new Label("Senha");
     BorderPane bp = new BorderPane();
-
+    private UsuarioControl control = new UsuarioControl();
 
     TelaLogin(ChamadorTelas chamador){
         this.chamador = chamador;
@@ -31,7 +31,6 @@ public class TelaLogin implements TelaStrategy {
         telaLogin.setHgap(5);
         txtUsuario.setPromptText("Digite seu usuário");
         txtSenha.setPromptText("Digite sua senha");
-
         telaLogin.add(lblUsuario,0,0);
         telaLogin.add(txtUsuario, 0, 1,2,1);
         telaLogin.add(lblSenha,0,2);
@@ -47,13 +46,12 @@ public class TelaLogin implements TelaStrategy {
             chamador.chamarTelas("Avançar");
         });
         btnLogin.setOnAction((e)->{
-            chamador.chamarTelas("Entrar");
-            //Código de autenticação de login
+            login();
         });
-/*
-        Bindings.bindBidirectional(txtUsuario.textProperty(), control.LoginProperty());
+
+        Bindings.bindBidirectional(txtUsuario.textProperty(), control.nomeProperty());
         Bindings.bindBidirectional(txtSenha.textProperty(), control.senhaProperty());
- */
+
         return telaLogin;
     }
 
@@ -65,6 +63,20 @@ public class TelaLogin implements TelaStrategy {
         telaLogin.setMargin(btnLogin, new Insets(0,100,0,200));
         telaLogin.setMargin(btnCadastro, new Insets(0,100,0,60));
 
+    }
+
+    public void login(){
+        control.login();
+        if(control.getId() != 0){
+            System.out.println(control.getId());
+            chamador.chamarTelas("Entrar");
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Login");
+            alert.setContentText("Falha no Login");
+            alert.show();
+        }
     }
 }
 

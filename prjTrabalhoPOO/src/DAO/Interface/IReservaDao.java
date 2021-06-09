@@ -6,8 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface IReservaDao {
-    public void insertReserva(ReservaModel reserva) throws SQLException;
-    public void updateReserva(ReservaModel reserva) throws SQLException;
-    public void deleteReserva(int idReserva) throws SQLException;
-    public List<ReservaModel> getReservasByUsuario(int idUsuario) throws SQLException;
+    public void insertReserva(ReservaModel reserva);
+    public void updateReserva(ReservaModel reserva);
+    public void deleteReserva(int idReserva);
+    public List<ReservaModel> getReservasByUsuario(int idUsuario);
+    public List<ReservaModel> getReservasByNome(int idUsuario,String pesquisa);
 }
